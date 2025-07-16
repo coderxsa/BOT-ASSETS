@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const path = require('path');
 
 // Replace this with the GitHub repo URL
-const repoUrl = 'https://github.com/coderxsa/NEBULA'; 
+const repoUrl = 'https://github.com/coderxsaa/NEBULA'; 
 
 
 (async () => {
