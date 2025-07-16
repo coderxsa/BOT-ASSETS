@@ -7,9 +7,9 @@ from pathlib import Path
 from tqdm import tqdm
 
 # --- USER: GitHub repo URL here ---
-repo_url = "https://github.com/coderxsa/NEBULA"  # ✅ Change this if needed
+repo_url = ""  # ✅ Change this if needed || Example: https://github.com/coderxsa/NEBULA
 
-# --- Setup ---
+
 if not repo_url.startswith("https://github.com/"):
     print("❌ Invalid GitHub URL.")
     exit(1
