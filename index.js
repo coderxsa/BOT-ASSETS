@@ -4,7 +4,7 @@ const axios = require("axios");
 const AdmZip = require("adm-zip");
 
 // GitHub repo ZIP link
-const ZIP_URL = "https://github.com/coderxsa/NEBULA/archive/refs/heads/main.zip"; // replace with the project u want
+const ZIP_URL = ""; // replace with the project u want
 
 async function cloneFromGitHub() {
     const zipPath = path.join(__dirname, "repo.zip");
