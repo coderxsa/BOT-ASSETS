@@ -1,47 +1,42 @@
-const axios = require('axios');
-const unzipper = require('unzipper');
-const fs = require('fs-extra');
-const path = require('path');
+const fs = require("fs-extra");
+const path = require("path");
+const axios = require("axios");
+const AdmZip = require("adm-zip");
 
-// Replace this with the GitHub repo URL
-const repoUrl = 'https://github.com/coderxsaa/NEBULA'; 
+// GitHub repo ZIP link
+const ZIP_URL = "https://github.com/coderxsa/NEBULA/archive/refs/heads/main.zip"; // replace with the project u want
 
-
-(async () => {
-    if (!repoUrl.startsWith('https://github.com/')) {
-        console.error('Invalid GitHub URL');
-        return;
-    }
-    const zipUrl = repoUrl.endsWith('/')
-        ? `${repoUrl}archive/refs/heads/main.zip`
-        : `${repoUrl}/archive/refs/heads/main.zip`;
-    const repoName = repoUrl.split('/').pop();
-    const baseDir = path.join(__dirname, 'downloads');
-    const extractDir = path.join(baseDir, `${repoName}_${Date.now()}`);
+async function cloneFromGitHub() {
+    const zipPath = path.join(__dirname, "repo.zip");
+    const tempPath = path.join(__dirname, "temp_repo");
     try {
-        await fs.ensureDir(extractDir);
-        const zipPath = path.join(extractDir, 'repo.zip');
-        const response = await axios({
-            method: 'GET',
-            url: zipUrl,
-            responseType: 'stream'
-        });
-        const writer = fs.createWriteStream(zipPath);
-        response.data.pipe(writer);
-        await new Promise((resolve, reject) => {
-            writer.on('finish', resolve);
-            writer.on('error', reject);
-        });
-        console.log(`Downloaded ZIP to: ${zipPath}`);
-        await fs.createReadStream(zipPath)
-            .pipe(unzipper.Extract({ path: extractDir }))
-            .promise();
+        console.log("📥 Downloading ZIP...");
+        const response = await axios({ url: ZIP_URL, responseType: "arraybuffer" });
+        fs.writeFileSync(zipPath, response.data);
+        console.log("🗜️ Extracting...");
+        const zip = new AdmZip(zipPath);
+        zip.extractAllTo(tempPath, true);
+        fs.unlinkSync(zipPath);
+        const extractedDirName = fs.readdirSync(tempPath).find(name => name.endsWith("-main"));
+        const extractedDir = path.join(tempPath, extractedDirName);
+        console.log("📂 Moving files to main folder (no overwrite)...");
+        const items = await fs.readdir(extractedDir);
+        for (const item of items) {
+            const src = path.join(extractedDir, item);
+            const dest = path.join(__dirname, item);
 
-        console.log(`Extracted to: ${extractDir}`);
-        const allFiles = await fs.readdir(extractDir);
-        console.log('Extracted content:');
-        console.log(allFiles);
+            if (!fs.existsSync(dest)) {
+                await fs.copy(src, dest);
+                console.log(`✅ Imported: ${item}`);
+            } else {
+                console.log(`⏩ Skipped (already exists): ${item}`);
+            }
+        }
+        await fs.remove(tempPath);
+        console.log("✅ Done.");
     } catch (err) {
-        console.error('Error:', err.message);
+        console.error("❌ Error:", err.message);
     }
-})();
+}
+
+cloneFromGitHub();
