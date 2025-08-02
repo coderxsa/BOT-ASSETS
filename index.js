@@ -3,10 +3,18 @@ const path = require("path");
 const axios = require("axios");
 const AdmZip = require("adm-zip");
 
-// GitHub repo ZIP link
-const ZIP_URL = ""; // replace with the project u want
+// 🔴 IMPORTANT:
+// Replace the URL below with the GitHub ZIP link.
+// ❌ Do NOT use .git links!
+// ✅ Use this format:
+// https://github.com/USERNAME/REPO-NAME/archive/refs/heads/BRANCH.zip
+// https://github.com/coderxsa/NEBULA/archive/refs/heads/main.zip
+// Make sure to replace *package.json*, *index.js*, or any file that would otherwise be skipped during the import.
+// Example:
 
-async function cloneFromGitHub() {
+const ZIP_URL = "";
+
+async function coderxsa() {
     const zipPath = path.join(__dirname, "repo.zip");
     const tempPath = path.join(__dirname, "temp_repo");
     try {
@@ -39,4 +47,4 @@ async function cloneFromGitHub() {
     }
 }
 
-cloneFromGitHub();
+coderxsa();
