@@ -12,7 +12,7 @@ repo_url = ""  # ✅ Change this if needed || Example: https://github.com/coderx
 
 if not repo_url.startswith("https://github.com/"):
     print("❌ Invalid GitHub URL.")
-    exit(1
+    exit(1)
 zip_url = repo_url.rstrip("/") + "/archive/refs/heads/main.zip"
 repo_name = repo_url.rstrip("/").split("/")[-1]
 timestamp = int(time.time())
